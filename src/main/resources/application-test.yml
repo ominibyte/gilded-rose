@@ -1,0 +1,10 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+  datasource:
+    url: jdbc:h2:mem:mem1
+    username: gildedrose
+    password: gildedrose
+    driverClassName: org.h2.Driver

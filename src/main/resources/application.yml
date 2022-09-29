@@ -1,0 +1,29 @@
+server:
+  port: 8088
+
+app:
+  item:
+    surge:
+      pricing-percent-adjustment: 0.1
+      views-threshold: 10
+      duration-threshold: 1h
+
+
+spring:
+  jpa:
+    database: h2
+    database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: true
+  h2:
+    console:
+      enabled: true
+      path: /h2
+  datasource:
+    url: jdbc:h2:file:./h2-db/gildedrose
+    username: gildedrose
+    password: gildedrose
+    driverClassName: org.h2.Driver
+
+  data:
+    rest:
+      base-path: /api/gilded-rose
