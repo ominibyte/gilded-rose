@@ -9,6 +9,7 @@ import com.miw.gildedrose.data.entity.Item;
 import com.miw.gildedrose.data.repository.ItemRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,6 +40,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    @Transactional
     public SurgeItem purchaseItem(Long id) {
         final Item item = repository.findById(id).orElseThrow(() -> new ItemNotFoundException("Unable to find an item " +
                 "with the id - \"" + id + "\""));
@@ -47,7 +49,7 @@ public class InventoryServiceImpl implements InventoryService {
         }
 
         repository.decrementItemQuantity(id);
-
+        item.decrementQuantity();
         return mapToSurgeItem(item);
     }
 

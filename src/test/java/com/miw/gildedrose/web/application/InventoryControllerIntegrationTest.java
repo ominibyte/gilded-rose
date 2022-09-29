@@ -92,7 +92,7 @@ class InventoryControllerIntegrationTest {
             response = restTemplate.getForEntity(baseUrl + "/items/silk", Map.class);
         }
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-        assertResponseReturnsFirstItem(response, 61);
+        assertResponseReturnsFirstItem(response, 61, 1);
     }
 
     @Test
@@ -118,7 +118,7 @@ class InventoryControllerIntegrationTest {
                 .postForEntity(baseUrl + "/purchase/1",
                         HttpEntity.EMPTY, Map.class);
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-        assertResponseReturnsFirstItem(response, 55);
+        assertResponseReturnsFirstItem(response, 55, 0);
     }
 
     @Test
@@ -133,11 +133,11 @@ class InventoryControllerIntegrationTest {
         assertThat(response.getStatusCode(), equalTo(HttpStatus.BAD_REQUEST));
     }
 
-    private void assertResponseReturnsFirstItem(ResponseEntity<Map> response, int price) {
+    private void assertResponseReturnsFirstItem(ResponseEntity<Map> response, int price, int count) {
         final Map data = response.getBody();
         assertThat(data, is(notNullValue()));
         assertThat(data.get("name"), equalTo("Silk"));
         assertThat(data.get("price"), equalTo(price));
-        assertThat(data.get("quantity"), equalTo(1));
+        assertThat(data.get("quantity"), equalTo(count));
     }
 }

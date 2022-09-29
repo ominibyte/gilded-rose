@@ -1,5 +1,6 @@
 package com.miw.gildedrose.business.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miw.gildedrose.business.domain.SurgeItem;
 import com.miw.gildedrose.business.exception.InsufficientQuantityException;
 import com.miw.gildedrose.business.exception.ItemNotFoundException;
@@ -39,6 +40,7 @@ class InventoryServiceTest {
     private static final Item ITEM_1 = new Item(1L, "silk", "SILK", "Silk material", 10, 1);
     private static final Item ITEM_2 = new Item(2L, "cotton", "COTTON", "Cotton wool", 15, 5);
     private static final Item EMPTY_ITEM = new Item(3L, "linen", "LINEN", "Linen cloth", 33, 0);
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Mock
     private ItemRepository repository;
@@ -121,12 +123,16 @@ class InventoryServiceTest {
     @Test
     void whenWePurchaseAnItemThenProcessIsSuccessful() {
         when(repository.findById(anyLong()))
-                .thenReturn(Optional.of(ITEM_1));
+                .thenReturn(Optional.of(objectMapper.convertValue(ITEM_1, Item.class)));
         defaultPricingStub();
         doNothing().when(repository).decrementItemQuantity(anyLong());
 
-        final SurgeItem item = inventoryService.purchaseItem(1L);
-        assertThat(item, equalTo(mapToSurgeItem(ITEM_1, 10)));
+        final Item item = objectMapper.convertValue(ITEM_1, Item.class);
+        item.decrementQuantity();
+
+        final SurgeItem surgeItem = inventoryService.purchaseItem(1L);
+        assertThat(surgeItem, equalTo(mapToSurgeItem(item, 10)));
+        assertThat(surgeItem.getQuantity(), equalTo(0));
 
         verify(repository, times(1)).findById(1L);
         verify(repository, times(1)).decrementItemQuantity(1L);
