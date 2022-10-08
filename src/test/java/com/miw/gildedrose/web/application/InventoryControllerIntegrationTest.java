@@ -51,7 +51,6 @@ class InventoryControllerIntegrationTest {
                 new Item(2L, "Cotton", "COTTON", "Cotton wool", 90, 36),
                 new Item(3L, "Linen", "LINEN", "Linen clothing", 133, 18)
         ));
-        System.out.println(itemRepository.findAll());
     }
 
     @Test
@@ -61,7 +60,7 @@ class InventoryControllerIntegrationTest {
         final List items = response.getBody();
         assertThat(items, is(notNullValue()));
         assertThat(items.size(), equalTo(3));
-        System.out.println(items);
+
         assertThat(((List<Map>) items).stream().map(item -> item.get("price")).collect(Collectors.toList()),
                 contains(55, 90, 133));
         assertThat(((List<Map>) items).stream().map(item -> item.get("name")).collect(Collectors.toList()),
